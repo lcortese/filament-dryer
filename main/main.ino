@@ -8,7 +8,7 @@
 Display mainDisplay;
 Encoder mainEncoder(3, 2, 4);
 
-int section;
+int unsigned section;
 
 void goToSection (int newSection) {
   section = newSection;
@@ -17,17 +17,19 @@ void goToSection (int newSection) {
 void goToHome () {
   goToSection(1);
 }
+
+Menu mainMenu(mainDisplay, mainEncoder, goToHome);
+
 void goToMenu () {
+  mainMenu.reset();
   goToSection(2);
 }
 
 Home mainHome(mainDisplay, mainEncoder, goToMenu);
-Menu mainMenu(mainDisplay, mainEncoder, goToHome);
 
 void setup() {
   Serial.begin(9600);  
-  section = 1;
-  temp = 20;
+  goToSection(1);
   mainDisplay.setup();
 }
 

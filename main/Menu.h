@@ -35,4 +35,8 @@ class Menu {
 
       mainDisplay.print(range);
     }
+
+    void reset() {
+      selectedIndex = 0;
+    }
 };
