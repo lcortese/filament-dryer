@@ -35,22 +35,22 @@ class Encoder {
       left = false;
       right = false;
 
-      rotaryPosition = rotaryPosition - isLeft() + isRight();
-
-      if (millis() < lastMillis + DEBOUNCE_DELAY) {
-        return;
+      if (!rotaryPosition && isLeft() != isRight()) {
+        rotaryPosition = isRight() - isLeft();
       }
 
-      if (isLeft() && isRight()) {
+      if (rotaryPosition && isLeft() && isRight()) {
         left = rotaryPosition > 0;
-        right = rotaryPosition < 0;
+        right = !left;
         rotaryPosition = 0;
       }
 
-      swDown = isDown();
-      swUp = prevDown && !swDown;
+      if (millis() > lastMillis + DEBOUNCE_DELAY) {
+        swDown = isDown();
+        swUp = prevDown && !swDown;
 
-      prevDown = swDown;
-      lastMillis = millis();
+        prevDown = swDown;
+        lastMillis = millis();
+      }
     }
 };
