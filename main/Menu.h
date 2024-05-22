@@ -1,28 +1,46 @@
 class Menu {
-  private:
-    const static unsigned int TOTAL = 5;
-    const static unsigned int HIDDEN_ITEMS = 1;
-    const String list[TOTAL + HIDDEN_ITEMS] = { "Corsa", "Peugeot", "Duster", "Focus", "Back" };
-    const static unsigned int PAGE_LENGTH = 2;
-    int unsigned selectedIndex = 0;
-    Display& mainDisplay;
-    Encoder& mainEncoder;
-    void (*goBack)();
+  static const unsigned int TOTAL = 2;
+  static const unsigned int HIDDEN_ITEMS = 0;
+  const String list[TOTAL + HIDDEN_ITEMS] = { "Configuration", "Back" };
+  static const unsigned int PAGE_LENGTH = 2;
+  unsigned int  selectedIndex = 0;
+  Display& mainDisplay;
+  Encoder& mainEncoder;
+  void (*goBack)();
+  void (*goToConfig)();
+
+  void close () {
+    selectedIndex = 0;
+    goBack();
+  }
 
   public:
-    Menu(Display& display, Encoder& encoder, void (*onGoBack)()) 
-      : mainDisplay(display), mainEncoder(encoder), goBack(onGoBack) {}
+    Menu(
+      Display& display,
+      Encoder& encoder,
+      void (*onGoBack)(),
+      void (*onGoToConfig)()
+    ) :
+      mainDisplay(display),
+      mainEncoder(encoder),
+      goBack(onGoBack),
+      goToConfig(onGoToConfig) {
+    }
 
     void update() {
-      if (mainEncoder.swUp && selectedIndex == 4) {
-        goBack();
+      if (mainEncoder.swUp && selectedIndex == 0) {
+        goToConfig();
+        return;
+      }
+      if (mainEncoder.swUp && selectedIndex == TOTAL - 1) {
+        close();
         return;
       }
       if (mainEncoder.left && selectedIndex > 0) {
-        selectedIndex = selectedIndex - 1;
+        selectedIndex--;
       }
       if (mainEncoder.right && selectedIndex < TOTAL - 1) {
-        selectedIndex = selectedIndex + 1;
+        selectedIndex++;
       }
 
       String range[PAGE_LENGTH];
@@ -34,9 +52,5 @@ class Menu {
       }
 
       mainDisplay.print(range);
-    }
-
-    void reset() {
-      selectedIndex = 0;
     }
 };

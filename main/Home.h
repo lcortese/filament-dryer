@@ -2,15 +2,22 @@
 #include <DHT_U.h>
 
 class Home {
-  private:
-    Display& mainDisplay;
-    Encoder& mainEncoder;
-    void (*goToMenu)();
-    DHT sensor;
+  Display& mainDisplay;
+  Encoder& mainEncoder;
+  void (*goToMenu)();
+  DHT sensor;
 
   public:
-    Home(Display& display, Encoder& encoder, void (*onGoToMenu)()) 
-      : mainDisplay(display), mainEncoder(encoder), goToMenu(onGoToMenu), sensor(7, DHT11){
+    Home(
+      Display& display,
+      Encoder& encoder,
+      void (*onGoToMenu)()
+    ) :
+      mainDisplay(display),
+      mainEncoder(encoder),
+      goToMenu(onGoToMenu),
+      sensor(7, DHT11)
+    {
       sensor.begin();
     }
 

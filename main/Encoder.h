@@ -1,21 +1,20 @@
 class Encoder {
-  private:
-    const byte LEFT_PIN;
-    const byte RIGHT_PIN;
-    const byte BUTTON_PIN;
-    bool prevDown;
-    int rotaryPosition;
-    unsigned long lastMillis;
+  const byte LEFT_PIN;
+  const byte RIGHT_PIN;
+  const byte BUTTON_PIN;
+  bool prevDown;
+  int rotaryPosition;
+  long unsigned lastMillis;
 
-    bool isDown() {
-      return !digitalRead(BUTTON_PIN);
-    }
-    bool isLeft() {
-      return digitalRead(LEFT_PIN);
-    }
-    bool isRight() {
-      return digitalRead(RIGHT_PIN);
-    }
+  bool isDown() {
+    return !digitalRead(BUTTON_PIN);
+  }
+  bool isLeft() {
+    return digitalRead(LEFT_PIN);
+  }
+  bool isRight() {
+    return digitalRead(RIGHT_PIN);
+  }
   
   public:
     Encoder(byte leftPin, byte rightPin, byte buttonPin): LEFT_PIN(leftPin), RIGHT_PIN(rightPin), BUTTON_PIN(buttonPin)  {
@@ -39,13 +38,13 @@ class Encoder {
         rotaryPosition = isRight() - isLeft();
       }
 
-      if (rotaryPosition && isLeft() && isRight()) {
-        left = rotaryPosition > 0;
-        right = !left;
-        rotaryPosition = 0;
-      }
-
       if (millis() > lastMillis + DEBOUNCE_DELAY) {
+        if (rotaryPosition && isLeft() && isRight()) {
+          left = rotaryPosition > 0;
+          right = !left;
+          rotaryPosition = 0;
+        }
+
         swDown = isDown();
         swUp = prevDown && !swDown;
 
