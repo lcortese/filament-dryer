@@ -3,10 +3,9 @@
 #include <LiquidCrystal_I2C.h>
 
 class Display {
-  private:
-    LiquidCrystal_I2C lcd;
-    const static uint8_t ROWS_COUNT = 2;
-    const static uint8_t COLUMNS_COUNT = 16;
+  LiquidCrystal_I2C lcd;
+  const static uint8_t ROWS_COUNT = 2;
+  const static uint8_t COLUMNS_COUNT = 16;
 
   public:
     Display() : lcd(0x27, 2, 1, 0, 4, 5, 6, 7) {}
