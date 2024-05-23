@@ -24,7 +24,7 @@ class Home {
     void update() {
       const String lines[] = {
         "Data:",
-        String(sensor.readTemperature()) + "c | " + String(sensor.readHumidity()) + "%",
+        String(sensor.readTemperature()) + "c | " + String(int(sensor.readHumidity())) + "%",
       };
 
       mainDisplay.print(lines);
