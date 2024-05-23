@@ -1,16 +1,14 @@
 class Menu {
-  static const unsigned int TOTAL = 2;
-  static const unsigned int HIDDEN_ITEMS = 0;
-  const String list[TOTAL + HIDDEN_ITEMS] = { "Configuration", "Back" };
-  static const unsigned int PAGE_LENGTH = 2;
-  unsigned int  selectedIndex = 0;
+  static const uint8_t LIST_LENGTH = 2;
+  const String LIST[LIST_LENGTH] = { "Configuration", "Back" };
   Display& mainDisplay;
   Encoder& mainEncoder;
   void (*goBack)();
   void (*goToConfig)();
+  List menuList;
 
   void close () {
-    selectedIndex = 0;
+    menuList.selectedIndex = 0;
     goBack();
   }
 
@@ -24,33 +22,26 @@ class Menu {
       mainDisplay(display),
       mainEncoder(encoder),
       goBack(onGoBack),
-      goToConfig(onGoToConfig) {
+      goToConfig(onGoToConfig),
+      menuList(LIST, LIST_LENGTH) {
     }
 
     void update() {
-      if (mainEncoder.swUp && selectedIndex == 0) {
+      if (mainEncoder.swUp && menuList.selectedIndex == 0) {
         goToConfig();
         return;
       }
-      if (mainEncoder.swUp && selectedIndex == TOTAL - 1) {
+      if (mainEncoder.swUp && menuList.selectedIndex == 1) {
         close();
         return;
       }
-      if (mainEncoder.left && selectedIndex > 0) {
-        selectedIndex--;
+      if (mainEncoder.left && menuList.selectedIndex > 0) {
+        menuList.selectedIndex--;
       }
-      if (mainEncoder.right && selectedIndex < TOTAL - 1) {
-        selectedIndex++;
-      }
-
-      String range[PAGE_LENGTH];
-      int unsigned page = selectedIndex / PAGE_LENGTH;
-
-      for (int unsigned i = 0; i < PAGE_LENGTH; i++) {
-        int unsigned listIndex = page * PAGE_LENGTH + i;
-        range[i] = selectedIndex == listIndex ? ">" + list[listIndex] : " " + list[listIndex];
+      if (mainEncoder.right && menuList.selectedIndex < LIST_LENGTH - 1) {
+        menuList.selectedIndex++;
       }
 
-      mainDisplay.print(range);
+      mainDisplay.print(menuList.getItems());
     }
 };

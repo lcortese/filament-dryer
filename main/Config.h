@@ -1,23 +1,24 @@
 class Config {
-  static const int DEFAULT_TEMPERATURE = 40;
-  static const int  ITEMS_COUNT = 3;
-  const String items[ITEMS_COUNT] = { "Temp: ", "Back", "Apply" };
+  static const uint8_t DEFAULT_TEMPERATURE = 40;
+  static const uint8_t DEFAULT_MINUTES = 60;
+  static const uint8_t  ITEMS_LENGTH = 4;
+  String ITEMS[ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Back", "Apply" };
+  List itemsList;
 
-  String formatedItems[ITEMS_COUNT];
   Display& mainDisplay;
   Encoder& mainEncoder;
   void (*goToMenu)();
-  int selectedIndex = 0; 
-  int newTemperature = DEFAULT_TEMPERATURE;
+  uint8_t newTemperature = DEFAULT_TEMPERATURE;
+  uint8_t newMinutes = DEFAULT_MINUTES;
   bool edit;
 
   void close () {
-    selectedIndex = 0;
     goToMenu();
   }
 
   public:
-    int temperature = DEFAULT_TEMPERATURE;
+    uint8_t temperature = DEFAULT_TEMPERATURE;
+    uint8_t minutes = DEFAULT_MINUTES;
 
     Config(
       Display& display,
@@ -26,52 +27,40 @@ class Config {
     ) :
       mainDisplay(display),
       mainEncoder(encoder),
-      goToMenu(onGoToMenu) {
+      goToMenu(onGoToMenu),
+      itemsList(ITEMS, ITEMS_LENGTH) {
     }
 
-    void update() {
+    void loop() {
       if (edit) {
-        if (mainEncoder.left && temperature > 0) {
-          newTemperature--;
-        }
-        if (mainEncoder.right && temperature < 100) {
-          newTemperature++;
-        }
+          if (mainEncoder.left && temperature > 0) {
+            newTemperature--;
+          }
+          if (mainEncoder.right && temperature < 100) {
+            newTemperature++;
+          }
       } else {
-        if (mainEncoder.left && selectedIndex > 0) {
-          selectedIndex--;
+        if (mainEncoder.left && itemsList.selectedIndex > 0) {
+          itemsList.selectedIndex--;
         }
-        if (mainEncoder.right && selectedIndex < ITEMS_COUNT - 1) {
-          selectedIndex++;
+        if (mainEncoder.right && itemsList.selectedIndex < ITEMS_LENGTH - 1) {
+          itemsList.selectedIndex++;
         }
-      }
 
-      for (uint8_t i = 0; i < ITEMS_COUNT; i++) {
-        String item = items[i];
-        if(i == 0) {
-          item += newTemperature;
-        }
-        formatedItems[i] = (i == selectedIndex ? ">" : " ") + item;
-      }
+        mainDisplay.print(itemsList.getItems());
 
-      const String lines[] = {
-        formatedItems[0],
-        edit ? "" : formatedItems[1] + " | " + formatedItems[2]
-      };
-
-      mainDisplay.print(lines);
-
-      if (mainEncoder.swUp) {
-        if (selectedIndex == 0) {
-          edit = !edit;
-        }
-        if(selectedIndex == 1) {
-          newTemperature = temperature;
-          close();
-        }
-        if(selectedIndex == 2) {
-          temperature = newTemperature;
-          close();
+        if (mainEncoder.swUp) {
+          if (itemsList.selectedIndex == 0) {
+            edit = !edit;
+          }
+          if(itemsList.selectedIndex == 2) {
+            newTemperature = temperature;
+            close();
+          }
+          if(itemsList.selectedIndex == 3) {
+            temperature = newTemperature;
+            close();
+          }
         }
       }
     }

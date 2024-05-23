@@ -1,11 +1,12 @@
 #include "./constants.h"
+#include "./List.h"
 #include "./Display.h"
 #include "./Encoder.h"
 #include "./Home.h"
 #include "./Menu.h"
 #include "./Config.h"
 
-int unsigned section;
+uint8_t section;
 
 void goToSection (int newSection) {
   section = newSection;
@@ -43,6 +44,6 @@ void loop() {
   } else if (section == 2) {
     mainMenu.update();
   } else if (section == 3) {
-    configMenu.update();
+    configMenu.loop();
   }
 }

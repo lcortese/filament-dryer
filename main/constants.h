@@ -1,1 +1,1 @@
-const unsigned int DEBOUNCE_DELAY = 1;
+const uint8_t DEBOUNCE_DELAY = 1;
