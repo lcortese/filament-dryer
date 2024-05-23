@@ -3,7 +3,7 @@ class Encoder {
   const byte RIGHT_PIN;
   const byte BUTTON_PIN;
   bool prevDown;
-  int rotaryPosition;
+  int8_t rotaryPosition;
   long unsigned lastMillis;
 
   bool isDown() {
