@@ -1,8 +1,10 @@
 class Config {
   static const uint8_t DEFAULT_TEMPERATURE = 40;
   static const uint8_t DEFAULT_MINUTES = 60;
-  static const uint8_t  ITEMS_LENGTH = 4;
-  String ITEMS[ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Back", "Apply" };
+  static const uint8_t DEFAULT_ITEMS_LENGTH = 5;
+  const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Apply", "Back" };
+  String formatedItems[DEFAULT_ITEMS_LENGTH];
+
   List itemsList;
 
   Display& mainDisplay;
@@ -13,6 +15,7 @@ class Config {
   bool edit;
 
   void close () {
+    itemsList.selectedIndex = 0;
     goToMenu();
   }
 
@@ -28,39 +31,71 @@ class Config {
       mainDisplay(display),
       mainEncoder(encoder),
       goToMenu(onGoToMenu),
-      itemsList(ITEMS, ITEMS_LENGTH) {
+      itemsList(formatedItems, DEFAULT_ITEMS_LENGTH) {
     }
 
     void loop() {
       if (edit) {
-          if (mainEncoder.left && temperature > 0) {
+        if (itemsList.selectedIndex == 0) {
+          if (mainEncoder.left && newTemperature > 0) {
             newTemperature--;
           }
-          if (mainEncoder.right && temperature < 100) {
+          if (mainEncoder.right && newTemperature < 100) {
             newTemperature++;
           }
+        }
+        if (itemsList.selectedIndex == 1) {
+          if (mainEncoder.left && newMinutes > 0) {
+            newMinutes = newMinutes -5;
+          }
+          if (mainEncoder.right && newMinutes < DEFAULT_MINUTES * 8) {
+            newMinutes = newMinutes + 5;
+          }
+        }
       } else {
         if (mainEncoder.left && itemsList.selectedIndex > 0) {
           itemsList.selectedIndex--;
         }
-        if (mainEncoder.right && itemsList.selectedIndex < ITEMS_LENGTH - 1) {
+        if (mainEncoder.right && itemsList.selectedIndex < DEFAULT_ITEMS_LENGTH - 1) {
           itemsList.selectedIndex++;
         }
 
-        mainDisplay.print(itemsList.getItems());
-
         if (mainEncoder.swUp) {
-          if (itemsList.selectedIndex == 0) {
-            edit = !edit;
-          }
           if(itemsList.selectedIndex == 2) {
+            temperature = DEFAULT_TEMPERATURE;
+            minutes = DEFAULT_MINUTES;
             newTemperature = temperature;
+            newMinutes = minutes;
             close();
           }
           if(itemsList.selectedIndex == 3) {
             temperature = newTemperature;
+            minutes = newMinutes;
             close();
           }
+          if(itemsList.selectedIndex == 4) {
+            newTemperature = temperature;
+            newMinutes = minutes;
+            close();
+          }
+        }
+      }
+
+      for (uint8_t i = 0; i < DEFAULT_ITEMS_LENGTH; i++) {
+        if (i == 0) {
+          formatedItems[i] = DEFAULT_ITEMS[i] + newTemperature + "c";
+        } else if (i == 1) {
+          formatedItems[i] = DEFAULT_ITEMS[i] + newMinutes;
+        } else {
+          formatedItems[i] = DEFAULT_ITEMS[i];
+        }
+      }
+
+      mainDisplay.print(itemsList.getItems());
+
+      if (mainEncoder.swUp) {
+        if (itemsList.selectedIndex == 0 || itemsList.selectedIndex == 1) {
+          edit = !edit;
         }
       }
     }

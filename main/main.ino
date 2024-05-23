@@ -3,8 +3,8 @@
 #include "./Display.h"
 #include "./Encoder.h"
 #include "./Home.h"
-#include "./Menu.h"
 #include "./Config.h"
+#include "./Menu.h"
 
 uint8_t section;
 
@@ -26,8 +26,8 @@ void goToConfig () {
 
 Display mainDisplay;
 Encoder mainEncoder(3, 2, 4);
-Menu mainMenu(mainDisplay, mainEncoder, goToHome, goToConfig);
 Config configMenu(mainDisplay, mainEncoder, goToMenu);
+Menu mainMenu(mainDisplay, mainEncoder, configMenu, goToHome, goToConfig);
 Home mainHome(mainDisplay, mainEncoder, goToMenu);
 
 void setup() {
