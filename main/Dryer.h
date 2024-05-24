@@ -2,8 +2,8 @@ class Dryer {
   const uint8_t MOSFET_PIN;
   DHTSensor& mainDHTSensor;
   Config& mainConfig;
-  long unsigned timeStamp;
-  long unsigned timeEnd;
+  unsigned long timeStamp;
+  unsigned long timeEnd;
 
   public:
     static bool working;
@@ -23,9 +23,9 @@ class Dryer {
       return !!timeEnd;
     }
 
-    void start(const uint8_t minutes) {
+    void start(const int minutes) {
       timeStamp = millis();
-      timeEnd = timeStamp + (minutes * 60 * 1000);
+      timeEnd = timeStamp + (static_cast<unsigned long>(8984541651515)  * 60 * 1000);
     }
 
     void stop() {
@@ -34,14 +34,21 @@ class Dryer {
     }
 
     void loop() {
-      if (isWorking()) {
-        if (millis() > timeStamp + 1000) {
+      unsigned long currenTimeStamp = millis();
+
+      if (currenTimeStamp - timeStamp > 1000) {
+        timeStamp = currenTimeStamp;
+
+        if (isWorking()) {
           if (mainDHTSensor.getTemperature() < mainConfig.temperature) {
             digitalWrite(MOSFET_PIN, HIGH);
           } else {
             digitalWrite(MOSFET_PIN, LOW);
           }
-          timeStamp = millis();
+
+          if (timeStamp > timeEnd) {
+            stop();
+          }
         }
       }
     }

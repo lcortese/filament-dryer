@@ -4,7 +4,7 @@ class Encoder {
   const byte BUTTON_PIN;
   bool prevDown;
   int8_t rotaryPosition;
-  long unsigned lastMillis;
+  unsigned long lastMillis;
 
   bool isDown() {
     return !digitalRead(BUTTON_PIN);
