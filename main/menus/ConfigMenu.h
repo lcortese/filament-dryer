@@ -1,14 +1,12 @@
-class Config {
+class ConfigMenu {
   static const uint8_t DEFAULT_TEMPERATURE = 40;
   static const int DEFAULT_MINUTES = 60;
   static const uint8_t DEFAULT_ITEMS_LENGTH = 5;
   const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Apply", "Cancel" };
   String formattedItems[DEFAULT_ITEMS_LENGTH];
 
-  List itemsList;
+  List list;
 
-  Display& mainDisplay;
-  Encoder& mainEncoder;
   void (*goToMenu)();
   uint8_t newTemperature = DEFAULT_TEMPERATURE;
   int newMinutes = DEFAULT_MINUTES;
@@ -28,7 +26,7 @@ class Config {
 
   void close () {
     formattedItems[0] = "";
-    itemsList.selectedIndex = 0;
+    list.selectedIndex = 0;
     goToMenu();
   }
 
@@ -36,59 +34,55 @@ class Config {
     uint8_t temperature = DEFAULT_TEMPERATURE;
     int minutes = DEFAULT_MINUTES;
 
-    Config(
-      Display& display,
-      Encoder& encoder,
+    ConfigMenu(
       void (*onGoToMenu)()
     ) :
-      mainDisplay(display),
-      mainEncoder(encoder),
       goToMenu(onGoToMenu),
-      itemsList(formattedItems, DEFAULT_ITEMS_LENGTH) {
+      list(formattedItems, DEFAULT_ITEMS_LENGTH) {
     }
 
     void loop() {
       if (edit) {
-        if (itemsList.selectedIndex == 0) {
-          if (mainEncoder.left && newTemperature > 0) {
+        if (list.selectedIndex == 0) {
+          if (encoder.left && newTemperature > 0) {
             newTemperature--;
             buildFormattedItems();
           }
-          if (mainEncoder.right && newTemperature < 100) {
+          if (encoder.right && newTemperature < 100) {
             newTemperature++;
             buildFormattedItems();
           }
         }
-        if (itemsList.selectedIndex == 1) {
-          if (mainEncoder.left && newMinutes > 0) {
+        if (list.selectedIndex == 1) {
+          if (encoder.left && newMinutes > 0) {
             newMinutes -= 5;
             buildFormattedItems();
           }
-          if (mainEncoder.right && newMinutes < DEFAULT_MINUTES * 8) {
+          if (encoder.right && newMinutes < DEFAULT_MINUTES * 8) {
             newMinutes += 5;
             buildFormattedItems();
           }
         }
       } else {
-        if (mainEncoder.left && itemsList.selectedIndex > 0) {
-          itemsList.selectedIndex--;
+        if (encoder.left && list.selectedIndex > 0) {
+          list.selectedIndex--;
         }
-        if (mainEncoder.right && itemsList.selectedIndex < DEFAULT_ITEMS_LENGTH - 1) {
-          itemsList.selectedIndex++;
+        if (encoder.right && list.selectedIndex < DEFAULT_ITEMS_LENGTH - 1) {
+          list.selectedIndex++;
         }
 
-        if (mainEncoder.swUp) {
-          if(itemsList.selectedIndex == 2) {
+        if (encoder.swUp) {
+          if(list.selectedIndex == 2) {
             newTemperature = DEFAULT_TEMPERATURE;
             newMinutes = DEFAULT_MINUTES;
             buildFormattedItems();
           }
-          if(itemsList.selectedIndex == 3) {
+          if(list.selectedIndex == 3) {
             temperature = newTemperature;
             minutes = newMinutes;
             close();
           }
-          if(itemsList.selectedIndex == 4) {
+          if(list.selectedIndex == 4) {
             newTemperature = temperature;
             newMinutes = minutes;
             close();
@@ -99,14 +93,14 @@ class Config {
       if (!formattedItems[0].length()) {
         buildFormattedItems();
       } else {
-        if (mainEncoder.swUp) {
-          if (itemsList.selectedIndex == 0 || itemsList.selectedIndex == 1) {
+        if (encoder.swUp) {
+          if (list.selectedIndex == 0 || list.selectedIndex == 1) {
             edit = !edit;
-            edit ? itemsList.setCursor("*") : itemsList.setCursor();
+            edit ? list.setCursor("*") : list.setCursor();
           }
         }
       }
 
-      mainDisplay.print(itemsList.getItems());
+      display.print(list.getItems());
     }
 };

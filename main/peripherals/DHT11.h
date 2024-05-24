@@ -1,11 +1,11 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-class DHTSensor {
+class Dht11 {
   DHT sensor;
 
   public:
-    DHTSensor(uint8_t pin): sensor(pin, DHT11) {
+    Dht11(uint8_t pin): sensor(pin, DHT11) {
       sensor.begin();
     }
 
@@ -16,5 +16,4 @@ class DHTSensor {
     uint8_t getHumidity() {
       return sensor.readHumidity();
     }
-
 };

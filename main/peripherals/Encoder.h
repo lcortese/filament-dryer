@@ -4,7 +4,7 @@ class Encoder {
   const byte BUTTON_PIN;
   bool prevDown;
   int8_t rotaryPosition;
-  unsigned long lastMillis;
+  unsigned long timeStamp;
 
   bool isDown() {
     return !digitalRead(BUTTON_PIN);
@@ -28,7 +28,7 @@ class Encoder {
     bool swDown;
     bool swUp;
 
-    void update() {
+    void loop() {
       swDown = false;
       swUp = false;
       left = false;
@@ -38,7 +38,7 @@ class Encoder {
         rotaryPosition = isRight() - isLeft();
       }
 
-      if (millis() > lastMillis + DEBOUNCE_DELAY) {
+      if (millis() > timeStamp + READ_DELAY) {
         if (rotaryPosition && isLeft() && isRight()) {
           left = rotaryPosition > 0;
           right = !left;
@@ -49,7 +49,7 @@ class Encoder {
         swUp = prevDown && !swDown;
 
         prevDown = swDown;
-        lastMillis = millis();
+        timeStamp = millis();
       }
     }
 };
