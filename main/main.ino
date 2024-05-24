@@ -1,18 +1,24 @@
 #include "./constants.h"
 
-#include "./List.h"
-#include "./DHTSensor.h"
-#include "./Display.h"
-#include "./Encoder.h"
+#include "./peripherals/DHT11.h"
+#include "./peripherals/Display.h"
+#include "./peripherals/Encoder.h"
 
-#include "./Home.h"
-#include "./Config.h"
-#include "./Dryer.h"
-#include "./Menu.h"
+#include "./helpers/List.h"
 
-DHTSensor mainDHTSensor(7);
-Display mainDisplay;
-Encoder mainEncoder(3, 2, 4);
+Display display;
+Encoder encoder(3, 2, 4);
+Dht11 dht11(7);
+
+#include "./menus/ConfigMenu.h"
+
+ConfigMenu configMenu(goToMenu);
+
+#include "./workers/Dryer.h"
+Dryer mainDryer(8);
+
+#include "./menus/NavigationMenu.h"
+#include "./menus/HomeMenu.h"
 
 uint8_t section;
 
@@ -32,25 +38,25 @@ void goToConfig () {
   goToSection(3);
 }
 
-Home mainHome(mainDisplay, mainDHTSensor, mainEncoder, goToMenu);
-Config configMenu(mainDisplay, mainEncoder, goToMenu);
-Dryer mainDryer(8, mainDHTSensor, configMenu);
-Menu mainMenu(mainDisplay, mainEncoder, mainDryer, configMenu, goToHome, goToConfig);
+HomeMenu homeMenu(goToMenu);
+NavigationMenu navigationMenu(goToHome, goToConfig);
 
 void setup() {
-  Serial.begin(9600);
+  if (DEBUG) {
+    Serial.begin(9600);
+  }
   goToSection(1);
-  mainDisplay.setup();
+  display.setup();
 }
 
 void loop() {
   mainDryer.loop();
-  mainEncoder.update();
+  encoder.loop();
 
   if (section == 1) {
-    mainHome.update();
+    homeMenu.loop();
   } else if (section == 2) {
-    mainMenu.update();
+    navigationMenu.loop();
   } else if (section == 3) {
     configMenu.loop();
   }
