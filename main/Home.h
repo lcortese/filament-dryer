@@ -1,30 +1,26 @@
-#include <DHT.h>
-#include <DHT_U.h>
-
 class Home {
   Display& mainDisplay;
+  DHTSensor& mainDHTSensor;
   Encoder& mainEncoder;
   void (*goToMenu)();
-  DHT sensor;
 
   public:
     Home(
       Display& display,
+      DHTSensor& dhtsensor,
       Encoder& encoder,
       void (*onGoToMenu)()
     ) :
       mainDisplay(display),
+      mainDHTSensor(dhtsensor),
       mainEncoder(encoder),
-      goToMenu(onGoToMenu),
-      sensor(7, DHT11)
-    {
-      sensor.begin();
+      goToMenu(onGoToMenu) {
     }
 
     void update() {
       const String lines[] = {
         "Data:",
-        String(sensor.readTemperature()) + "c | " + String(int(sensor.readHumidity())) + "%",
+        String(mainDHTSensor.getTemperature()) + "c | " + String(mainDHTSensor.getHumidity()) + "%",
       };
 
       mainDisplay.print(lines);

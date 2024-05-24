@@ -1,6 +1,6 @@
 class Config {
   static const uint8_t DEFAULT_TEMPERATURE = 40;
-  static const uint8_t DEFAULT_MINUTES = 60;
+  static const int DEFAULT_MINUTES = 60;
   static const uint8_t DEFAULT_ITEMS_LENGTH = 5;
   const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Apply", "Cancel" };
   String formattedItems[DEFAULT_ITEMS_LENGTH];
@@ -11,7 +11,7 @@ class Config {
   Encoder& mainEncoder;
   void (*goToMenu)();
   uint8_t newTemperature = DEFAULT_TEMPERATURE;
-  uint8_t newMinutes = DEFAULT_MINUTES;
+  int newMinutes = DEFAULT_MINUTES;
   bool edit;
 
   void buildFormattedItems () {
@@ -34,7 +34,7 @@ class Config {
 
   public:
     uint8_t temperature = DEFAULT_TEMPERATURE;
-    uint8_t minutes = DEFAULT_MINUTES;
+    int minutes = DEFAULT_MINUTES;
 
     Config(
       Display& display,
