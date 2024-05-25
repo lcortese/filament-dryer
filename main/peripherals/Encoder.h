@@ -38,13 +38,13 @@ class Encoder {
         rotaryPosition = isRight() - isLeft();
       }
 
-      if (millis() > timeStamp + READ_DELAY) {
-        if (rotaryPosition && isLeft() && isRight()) {
-          left = rotaryPosition > 0;
-          right = !left;
-          rotaryPosition = 0;
-        }
+      if (rotaryPosition && isLeft() && isRight()) {
+        left = rotaryPosition > 0;
+        right = !left;
+        rotaryPosition = 0;
+      }
 
+      if (millis() > timeStamp + READ_DELAY) {
         swDown = isDown();
         swUp = prevDown && !swDown;
 

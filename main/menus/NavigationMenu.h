@@ -23,15 +23,15 @@ class NavigationMenu {
 
     void loop() {
       if (encoder.swUp && list.selectedIndex == 0) {
-        if (!mainDryer.isWorking()) {
+        if (!dryer.isWorking()) {
           return goToConfig();
         }
       }
       if (encoder.swUp && list.selectedIndex == 1) {
-        if (!mainDryer.isWorking()) {
-          mainDryer.start(configMenu.minutes);
+        if (!dryer.isWorking()) {
+          dryer.start(configStore.getMinutes());
         } else {
-          mainDryer.stop();
+          dryer.stop();
         }
         return close();
       }
@@ -53,13 +53,13 @@ class NavigationMenu {
 
         for(uint8_t i = 0; i < LIST_LENGTH; i++) {
           if (i == 1) {
-            formattedList[i] = (mainDryer.isWorking() ? "Stop" : DEFAULT_LIST[i]) + ": " + configMenu.temperature + "c " + configMenu.minutes+"m";
+            formattedList[i] = (dryer.isWorking() ? "Stop" : DEFAULT_LIST[i]) + ": " + configStore.getTemperature() + "c " + configStore.getMinutes()+"m";
           } else {
             formattedList[i] = DEFAULT_LIST[i];
           }
         }
 
-        mainDryer.isWorking() && list.selectedIndex == 0
+        dryer.isWorking() && list.selectedIndex == 0
           ? list.setCursor("x")
           : list.setCursor();
 
