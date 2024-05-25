@@ -1,24 +1,26 @@
 #include "./constants.h"
 
-#include "./peripherals/DHT11.h"
 #include "./peripherals/Display.h"
 #include "./peripherals/Encoder.h"
-
-#include "./helpers/List.h"
+#include "./peripherals/DHT11.h"
 
 Display display;
 Encoder encoder(3, 2, 4);
 Dht11 dht11(7);
 
-#include "./menus/ConfigMenu.h"
+#include "./helpers/List.h"
+#include "./helpers/padStart.h"
+#include "./stores/Config.h"
 
-ConfigMenu configMenu(goToMenu);
+Config configStore;
 
 #include "./workers/Dryer.h"
-Dryer mainDryer(8);
 
-#include "./menus/NavigationMenu.h"
+Dryer dryer(8);
+
 #include "./menus/HomeMenu.h"
+#include "./menus/NavigationMenu.h"
+#include "./menus/ConfigMenu.h"
 
 uint8_t section;
 
@@ -40,6 +42,7 @@ void goToConfig () {
 
 HomeMenu homeMenu(goToMenu);
 NavigationMenu navigationMenu(goToHome, goToConfig);
+ConfigMenu configMenu(goToMenu);
 
 void setup() {
   if (DEBUG) {
@@ -50,7 +53,7 @@ void setup() {
 }
 
 void loop() {
-  mainDryer.loop();
+  dryer.loop();
   encoder.loop();
 
   if (section == 1) {

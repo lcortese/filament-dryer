@@ -1,15 +1,14 @@
 class ConfigMenu {
-  static const uint8_t DEFAULT_TEMPERATURE = 40;
-  static const int DEFAULT_MINUTES = 60;
+  static const uint8_t MINUTES_STEPS = 5;
   static const uint8_t DEFAULT_ITEMS_LENGTH = 5;
-  const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Apply", "Cancel" };
+  const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Save", "Cancel" };
   String formattedItems[DEFAULT_ITEMS_LENGTH];
 
   List list;
 
   void (*goToMenu)();
-  uint8_t newTemperature = DEFAULT_TEMPERATURE;
-  int newMinutes = DEFAULT_MINUTES;
+  uint8_t newTemperature = configStore.DEFAULT_TEMPERATURE;
+  int newMinutes = configStore.DEFAULT_MINUTES;
   bool edit;
 
   void buildFormattedItems () {
@@ -31,9 +30,6 @@ class ConfigMenu {
   }
 
   public:
-    uint8_t temperature = DEFAULT_TEMPERATURE;
-    int minutes = DEFAULT_MINUTES;
-
     ConfigMenu(
       void (*onGoToMenu)()
     ) :
@@ -54,12 +50,12 @@ class ConfigMenu {
           }
         }
         if (list.selectedIndex == 1) {
-          if (encoder.left && newMinutes > 0) {
-            newMinutes -= 5;
+          if (encoder.left && newMinutes - MINUTES_STEPS >= 0) {
+            newMinutes -= MINUTES_STEPS;
             buildFormattedItems();
           }
-          if (encoder.right && newMinutes < DEFAULT_MINUTES * 8) {
-            newMinutes += 5;
+          if (encoder.right && newMinutes + MINUTES_STEPS <= configStore.DEFAULT_MINUTES * 8) {
+            newMinutes += MINUTES_STEPS;
             buildFormattedItems();
           }
         }
@@ -72,19 +68,20 @@ class ConfigMenu {
         }
 
         if (encoder.swUp) {
+          // reset
           if(list.selectedIndex == 2) {
-            newTemperature = DEFAULT_TEMPERATURE;
-            newMinutes = DEFAULT_MINUTES;
+            newTemperature = configStore.DEFAULT_TEMPERATURE;
+            newMinutes = configStore.DEFAULT_MINUTES;
             buildFormattedItems();
-          }
-          if(list.selectedIndex == 3) {
-            temperature = newTemperature;
-            minutes = newMinutes;
+          // apply
+          } else if(list.selectedIndex == 3) {
+            configStore.setTemperature(newTemperature);
+            configStore.setMinutes(newMinutes);
             close();
-          }
-          if(list.selectedIndex == 4) {
-            newTemperature = temperature;
-            newMinutes = minutes;
+          // cancel
+          } else if(list.selectedIndex == 4) {
+            newTemperature = configStore.getTemperature();
+            newMinutes = configStore.getMinutes();
             close();
           }
         }
