@@ -1,4 +1,5 @@
 class Dryer {
+  static const uint8_t MAX_BED_TEMP = 80;
   const uint8_t MOSFET_PIN;
   unsigned long startTimeStamp;
   unsigned long timeStamp;
@@ -6,9 +7,9 @@ class Dryer {
 
   public:
     Dryer(
-      const uint8_t mosfetPin
+      const uint8_t relayPin
     ) :
-      MOSFET_PIN(mosfetPin)
+      MOSFET_PIN(relayPin)
     {
       pinMode(MOSFET_PIN, OUTPUT);
     }
@@ -40,7 +41,15 @@ class Dryer {
         timeStamp = currenTimeStamp;
 
         if (isWorking()) {
-          if (dht11.getTemperature() < configStore.getTemperature()) {
+          const uint8_t maxHeaterTemp = configStore.getTemperature() >= MAX_BED_TEMP
+            ? configStore.getTemperature() * 1.2
+            : MAX_BED_TEMP;
+
+          bool ambientBelowTarget = dht11.getTemperature() < configStore.getTemperature();
+          bool heaterBelowTarget = heater.getTemperature() < configStore.getTemperature();
+          bool heaterExceeded = heater.getTemperature() > maxHeaterTemp;
+
+          if ((ambientBelowTarget || heaterBelowTarget) && !heaterExceeded) {
             digitalWrite(MOSFET_PIN, HIGH);
           } else {
             digitalWrite(MOSFET_PIN, LOW);
