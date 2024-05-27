@@ -2,10 +2,12 @@
 
 #include "./peripherals/Display.h"
 #include "./peripherals/Encoder.h"
+#include "./peripherals/NTC100k.h"
 #include "./peripherals/DHT11.h"
 
 Display display;
 Encoder encoder(3, 2, 4);
+NTC100k heater(A0);
 Dht11 dht11(7);
 
 #include "./helpers/List.h"
@@ -55,6 +57,7 @@ void setup() {
 void loop() {
   dryer.loop();
   encoder.loop();
+  heater.loop();
 
   if (section == 1) {
     homeMenu.loop();
