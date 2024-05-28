@@ -8,7 +8,7 @@ class ConfigMenu {
 
   void (*goToMenu)();
   uint8_t newTemperature = configStore.DEFAULT_TEMPERATURE;
-  int newMinutes = configStore.DEFAULT_MINUTES;
+  unsigned int newMinutes = configStore.DEFAULT_MINUTES;
   bool edit;
 
   void buildFormattedItems () {
@@ -67,6 +67,10 @@ class ConfigMenu {
           list.selectedIndex++;
         }
 
+        list.selectedIndex == 1 && dryer.isWorking()
+          ? list.setCursor("x")
+          : list.setCursor();
+
         if (encoder.swUp) {
           // reset
           if(list.selectedIndex == 2) {
@@ -91,10 +95,11 @@ class ConfigMenu {
         buildFormattedItems();
       } else {
         if (encoder.swUp) {
-          if (list.selectedIndex == 0 || list.selectedIndex == 1) {
-            edit = !edit;
-            edit ? list.setCursor("*") : list.setCursor();
+          if (list.selectedIndex == 1 && dryer.isWorking()) {
+            return;
           }
+          edit = !edit;
+          edit ? list.setCursor("*") : list.setCursor();
         }
       }
 

@@ -23,9 +23,7 @@ class NavigationMenu {
 
     void loop() {
       if (encoder.swUp && list.selectedIndex == 0) {
-        if (!dryer.isWorking()) {
-          return goToConfig();
-        }
+        return goToConfig();
       }
       if (encoder.swUp && list.selectedIndex == 1) {
         if (!dryer.isWorking()) {
@@ -58,10 +56,6 @@ class NavigationMenu {
             formattedList[i] = DEFAULT_LIST[i];
           }
         }
-
-        dryer.isWorking() && list.selectedIndex == 0
-          ? list.setCursor("x")
-          : list.setCursor();
 
         display.print(list.getItems());
       }
