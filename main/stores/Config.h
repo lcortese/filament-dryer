@@ -4,8 +4,8 @@ class Config {
     unsigned int minutes;
 
   public:
-    static const uint8_t DEFAULT_TEMPERATURE = 40;
-    static const int DEFAULT_MINUTES = 60;
+    static const uint8_t DEFAULT_TEMPERATURE = 50;
+    static const unsigned int DEFAULT_MINUTES = 60;
 
     Config() {
       reset();
