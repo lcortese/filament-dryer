@@ -1,5 +1,5 @@
 class Dryer {
-  static const uint8_t MAX_BED_TEMP = 80;
+  static const uint8_t MAX_HEATER_TEMP = 80;
   const uint8_t MOSFET_PIN;
   unsigned long startTimeStamp;
   unsigned long timeStamp;
@@ -41,9 +41,7 @@ class Dryer {
         timeStamp = currenTimeStamp;
 
         if (isWorking()) {
-          const uint8_t maxHeaterTemp = configStore.getTemperature() >= MAX_BED_TEMP
-            ? configStore.getTemperature() * 1.2
-            : MAX_BED_TEMP;
+          const uint8_t maxHeaterTemp = min(configStore.getTemperature() * 1.4, MAX_HEATER_TEMP);
 
           bool ambientBelowTarget = dht11.getTemperature() < configStore.getTemperature();
           bool heaterBelowTarget = heater.getTemperature() < configStore.getTemperature();

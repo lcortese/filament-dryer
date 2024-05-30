@@ -54,7 +54,7 @@ class ConfigMenu {
             newMinutes -= MINUTES_STEPS;
             buildFormattedItems();
           }
-          if (encoder.right && newMinutes + MINUTES_STEPS <= configStore.DEFAULT_MINUTES * 8) {
+          if (encoder.right && newMinutes + MINUTES_STEPS <= 60 * 8) {
             newMinutes += MINUTES_STEPS;
             buildFormattedItems();
           }
@@ -95,11 +95,13 @@ class ConfigMenu {
         buildFormattedItems();
       } else {
         if (encoder.swUp) {
-          if (list.selectedIndex == 1 && dryer.isWorking()) {
-            return;
+          if (list.selectedIndex == 0 || list.selectedIndex == 1) {
+            if(list.selectedIndex == 1 && dryer.isWorking()) {
+              return;
+            }
+            edit = !edit;
+            edit ? list.setCursor("*") : list.setCursor();
           }
-          edit = !edit;
-          edit ? list.setCursor("*") : list.setCursor();
         }
       }
 
