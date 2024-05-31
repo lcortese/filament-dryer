@@ -27,10 +27,10 @@ class HomeMenu {
         RENDER_TIMESTAMP = CURRENT_RENDER_TIMESTAMP;
 
         if (dryer.isWorking()) {
-          lines[0] = String(dht11.getTemperature()) + "/" + String(configStore.getTemperature()) + "C "+String(heater.getTemperature()) + "C | " + String(dht11.getHumidity()) + "%";
-          lines[1] = formatTime(dryer.elapsedMinutes()) + "/" + formatTime(configStore.getMinutes());
+          lines[0] = String(int(dht11.getTemperature())) + "/" + String(configStore.getTemperature()) + "C "+String(int(heater.getTemperature())) + "C | " + String(dht11.getHumidity()) + "%";
+          lines[1] = formatTime(int(dryer.elapsedMinutes())) + "/" + formatTime(configStore.getMinutes());
         } else {
-          lines[0] = String(dht11.getTemperature()) + "C "+String(heater.getTemperature()) + "C | " + String(dht11.getHumidity()) + "%";
+          lines[0] = String(int(dht11.getTemperature())) + "C "+String(int(heater.getTemperature())) + "C | " + String(dht11.getHumidity()) + "%";
           lines[1] = "Click for menu";
         }
 

@@ -4,11 +4,13 @@
 #include "./peripherals/Encoder.h"
 #include "./peripherals/NTC100k.h"
 #include "./peripherals/DHT11.h"
+#include "./peripherals/Fan.h"
 
 Display display;
 Encoder encoder(3, 2, 4);
 NTC100k heater(A0);
 Dht11 dht11(7);
+Fan outFan(6);
 
 #include "./helpers/List.h"
 #include "./helpers/padStart.h"
