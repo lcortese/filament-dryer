@@ -59,7 +59,7 @@ class NTC100k {
       }
     }
 
-    const int getTemperature() {
+    const float getTemperature() {
       return temperature;
     }
 };

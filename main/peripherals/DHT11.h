@@ -9,7 +9,7 @@ class Dht11 {
       sensor.begin();
     }
 
-    int8_t getTemperature() {
+    float getTemperature() {
       return sensor.readTemperature();
     }
 
