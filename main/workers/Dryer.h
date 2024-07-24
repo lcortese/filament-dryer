@@ -54,7 +54,7 @@ class Dryer {
             digitalWrite(MOSFET_PIN, LOW);
           }
 
-          outFan.setSpeed(dht11.getTemperature() / float(configStore.getTemperature()) * 100);
+          outFan.setSpeed(max(dht11.getTemperature() / float(configStore.getTemperature()) * 100, 30));
 
           if (timeStamp > timeEnd) {
             stop();

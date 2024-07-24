@@ -7,6 +7,6 @@ class Fan {
     }
 
     void setSpeed(uint8_t value) {
-      analogWrite(PIN, 255 * (float(value) / 100));
+      analogWrite(PIN, min(255 * value / 100, 255));
     }
 };
