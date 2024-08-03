@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "./constants.h"
 
 #include "./peripherals/Display.h"
