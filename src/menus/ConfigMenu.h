@@ -4,9 +4,9 @@ class ConfigMenu {
   const String DEFAULT_ITEMS[DEFAULT_ITEMS_LENGTH] = { "Temp: ", "Minutes: ", "Reset", "Save", "Cancel" };
   String formattedItems[DEFAULT_ITEMS_LENGTH];
 
+  void (*goToMenu)();
   List list;
 
-  void (*goToMenu)();
   uint8_t newTemperature = configStore.DEFAULT_TEMPERATURE;
   unsigned int newMinutes = configStore.DEFAULT_MINUTES;
   bool edit;
